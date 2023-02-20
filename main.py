@@ -1,8 +1,8 @@
 import os
 import encryption
 import file_management as myfiles
-import base64
 import getpass
+import password_generator as passgen
 
 #clean the console
 def clear():
@@ -20,6 +20,7 @@ def menu(master_pwd):
             case "q":
                 clear()
                 exit()
+            
             #View your passwords
             case "1":
                 clear()
@@ -33,6 +34,7 @@ def menu(master_pwd):
                     exit()
                 else:
                     continue
+            
             #Add a new password
             case "2":
                 clear()
@@ -41,6 +43,7 @@ def menu(master_pwd):
                 token, salt = encryption.encrypt(master_pwd, pwd)
                 myfiles.add(name, salt, token)
             #Delete a password
+
             case "3":
                 clear()
                 myfiles.list_files()
@@ -53,6 +56,7 @@ def menu(master_pwd):
                     exit()
                 else:
                     continue
+            
             case _:
                 clear()
                 continue
@@ -85,21 +89,15 @@ def after_action_menu():
 
 #Asks the necessary data in order to add to the txt file
 def ask_data():
-    #If true, You're not gonna be able to see the password you're typing, for security concerns.
-    is_hidden = False
-
     name = input("\nName of your password: ")
+    action = input("Do you want to create a strong random password? (y/n): ").lower()
 
-    if is_hidden == False:
-        pwd = input("Password: ")
-    elif is_hidden == True:
-        pwd = getpass.getpass(prompt="Password: ")
+    if action == "y":
+        pwd = passgen.get_password_info()
+        return name, pwd
     else:
-        clear()
-        print("\nThe is hidden variable is not a boolean\n")
-        exit()
-
-    return name, pwd
+        pwd = input("Password: ")
+        return name, pwd
 
 #Ask to write down the Master Password and also confirm it
 def get_master_pwd(is_hidden: bool):

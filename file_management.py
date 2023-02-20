@@ -1,5 +1,6 @@
 import os
 import encryption
+import pwd_gen_utils as utils
 
 def add(file_name: str, salt: bytes, token: bytes):
     if not os.path.exists("passwords"):
@@ -19,6 +20,9 @@ def view(file_name: str, master_pwd: bytes):
             token = lines[1]
             decrypted_pwd = encryption.decrypt(master_pwd, token, salt)
             printing(file_name, decrypted_pwd)
+            if input("Do you want to copy the password to clipboard? (y/n): ").lower() == "y":
+                    utils.copy_to_clipboard(decrypted_pwd)
+            os.system('cls')
     except:
         not_found_error()
 
